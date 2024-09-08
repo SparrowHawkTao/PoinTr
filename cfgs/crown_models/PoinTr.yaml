@@ -30,11 +30,12 @@ dataset : {
   test : { _base_: cfgs/dataset_configs/crown.yaml, 
             others: {subset: 'test'}}}
 
-
 model : {
-  NAME: PoinTr, num_pred: 6144, num_query: 96, knn_layer: 1, trans_dim: 384}
-total_bs : 96
+  NAME: PoinTr, num_pred: 14336, num_query: 224, knn_layer: 1, trans_dim: 384}
+  
+total_bs : 48 
 step_per_update : 1
-max_epoch : 200
+max_epoch : 300
 
-consider_metric: CDL2
+consider_metric: CDL1
+
