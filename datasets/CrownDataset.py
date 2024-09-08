@@ -29,7 +29,7 @@ class crown(data.Dataset):
         with open(self.category_file) as f:
             self.dataset_categories = json.loads(f.read())
 
-        self.file_list = self._get_file_list(self.subset, self.n_renderings)
+        self.file_list = self._get_file_list(self.subset)
         self.transforms = self._get_transforms(self.subset)
 
     def _get_transforms(self, subset):
@@ -59,12 +59,12 @@ class crown(data.Dataset):
                 'objects': ['partial', 'gt']
             }])
 
-    def _get_file_list(self, subset, n_renderings=1):
+    def _get_file_list(self, subset):
         """Prepare file list for the dataset"""
         file_list = []
 
         print_log('Collecting files of subset: %s' % (subset), logger='CROWNDATASET')
-        samples = dc[subset]
+        samples = self.dataset_categories[subset]
 
         for s in samples:
             file_list.append({
