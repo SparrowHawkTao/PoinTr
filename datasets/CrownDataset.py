@@ -41,8 +41,11 @@ class crown(data.Dataset):
                 },
                 'objects': ['partial']
             }, {
-                'callback': 'RandomMirrorPoints',
-                'objects': ['partial', 'gt']
+                'callback': 'RandomSamplePoints',
+                'parameters': {
+                    'n_points': self.npoints
+                },
+                'objects': ['gt']
             },{
                 'callback': 'ToTensor',
                 'objects': ['partial', 'gt']
@@ -68,7 +71,7 @@ class crown(data.Dataset):
 
         for s in samples:
             file_list.append({
-                'taxonomy_id': '1',
+                'taxonomy_id': '02691156',
                 'model_id': s,
                 'partial_path': self.partial_points_path % (s),
                 'gt_path': self.complete_points_path % (s),
@@ -84,12 +87,10 @@ class crown(data.Dataset):
         for ri in ['partial', 'gt']:
             file_path = sample['%s_path' % ri]
             data[ri] = IO.get(file_path).astype(np.float32)
-
         # assert data['gt'].shape[0] == self.npoints
 
         if self.transforms is not None:
             data = self.transforms(data)
-
         return sample['taxonomy_id'], sample['model_id'], (data['partial'], data['gt'])
 
     def __len__(self):

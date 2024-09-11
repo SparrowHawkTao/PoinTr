@@ -3,3 +3,4 @@ CATEGORY_FILE_PATH: data/crown/crown.json
 N_POINTS: 16384
 PARTIAL_POINTS_PATH: data/crown/partial/%s
 COMPLETE_POINTS_PATH: data/crown/complete/%s
+CARS: FALSE
