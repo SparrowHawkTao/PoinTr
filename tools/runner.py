@@ -95,7 +95,7 @@ def run_net(args, config, train_writer=None, val_writer=None):
             data_time.update(time.time() - batch_start_time)
             npoints = config.dataset.train._base_.N_POINTS
             dataset_name = config.dataset.train._base_.NAME
-            if dataset_name == 'PCN' or dataset_name == 'Completion3D' or dataset_name == 'Projected_ShapeNet' or dataset_name == 'crown':
+            if dataset_name == 'PCN' or dataset_name == 'Completion3D' or dataset_name == 'Projected_ShapeNet' or dataset_name == 'crown' or dataset_name == 'crown2':
                 partial = data[0].cuda()
                 gt = data[1].cuda()
                 if config.dataset.train._base_.CARS:
@@ -145,8 +145,8 @@ def run_net(args, config, train_writer=None, val_writer=None):
             batch_time.update(time.time() - batch_start_time)
             batch_start_time = time.time()
 
-            if idx % 100 == 0:
-                print_log('[Epoch %d/%d][Batch %d/%d] BatchTime = %.3f (s) DataTime = %.3f (s) Losses = %s lr = %.6f' %
+            #if idx % 100 == 0:
+            print_log('[Epoch %d/%d][Batch %d/%d] BatchTime = %.3f (s) DataTime = %.3f (s) Losses = %s lr = %.6f' %
                             (epoch, config.max_epoch, idx + 1, n_batches, batch_time.val(), data_time.val(),
                             ['%.4f' % l for l in losses.val()], optimizer.param_groups[0]['lr']), logger = logger)
 
@@ -200,7 +200,7 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
 
             npoints = config.dataset.val._base_.N_POINTS
             dataset_name = config.dataset.val._base_.NAME
-            if dataset_name == 'PCN' or dataset_name == 'Completion3D' or dataset_name == 'Projected_ShapeNet' or dataset_name == 'crown':
+            if dataset_name == 'PCN' or dataset_name == 'Completion3D' or dataset_name == 'Projected_ShapeNet' or dataset_name == 'crown' or dataset_name == 'crown2':
                 partial = data[0].cuda()
                 gt = data[1].cuda()
             elif dataset_name == 'ShapeNet':
@@ -351,7 +351,7 @@ def test(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config, 
 
             npoints = config.dataset.test._base_.N_POINTS
             dataset_name = config.dataset.test._base_.NAME
-            if dataset_name == 'PCN' or dataset_name == 'Projected_ShapeNet' or dataset_name == 'crown':
+            if dataset_name == 'PCN' or dataset_name == 'Projected_ShapeNet' or dataset_name == 'crown' or dataset_name == 'crown2':
                 partial = data[0].cuda()
                 gt = data[1].cuda()
 

@@ -1,3 +1,4 @@
+import torch
 import torch.utils.data as data
 import numpy as np
 import os, sys
@@ -66,7 +67,7 @@ class crown2(data.Dataset):
         sample = self.sample_list[idx]
         file_path = os.path.abspath(sample['path'])
 
-        print_log('Get sample from path: %s' % file_path, logger='CROWN2DATASET')
+        #print_log('Get sample from path: %s' % file_path, logger='CROWN2DATASET')
 
         # T 1000 P & A 5120 C 1568
 
