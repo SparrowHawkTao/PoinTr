@@ -29,7 +29,6 @@ class crown2(data.Dataset):
             self.dataset_categories = json.loads(f.read())
 
         self.sample_list = self._get_sample_list(self.subset)
-        self.transforms = self._get_transforms(self.subset)
 
     def _get_sample_list(self, subset):
         """Prepare file list for the dataset"""
