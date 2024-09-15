@@ -10,7 +10,7 @@ import os
 import json
 from .build import DATASETS
 from utils.logger import *
-
+import open3d as o3d
 
 # References:
 # - https://github.com/hzxie/GRNet/blob/master/utils/data_loaders.py
@@ -82,19 +82,19 @@ class crown2(data.Dataset):
 
         #sample from main
         patch_size_main = 5120
-        main_select = _get_random_chosen_points(main, patch_size_main)
+        main_select = self._get_random_chosen_points(main, patch_size_main)
 
         #sample from opposing
         patch_size_opposing=5120
-        opposing_select = _get_random_chosen_points(opposing, patch_size_opposing)
+        opposing_select = self._get_random_chosen_points(opposing, patch_size_opposing)
 
         #sample from crown
         patch_size_crown=1568
-        crown_select = _get_random_chosen_points(crown, patch_size_crown)
+        crown_select = self._get_random_chosen_points(crown, patch_size_crown)
 
         #sample from implant
         patch_size_implant=1000
-        implant_select = _get_random_chosen_points(implant, patch_size_implant)
+        implant_select = self._get_random_chosen_points(implant, patch_size_implant)
 
         data_partial= torch.from_numpy(np.concatenate((main_select, implant_select, opposing_select), axis=0)).float()
         data_gt= torch.from_numpy(np.concatenate((crown_select, implant_select), axis=0)).float()
