@@ -47,6 +47,21 @@ class crown2(data.Dataset):
         print_log('Complete collecting lines of the dataset. Total lines: %d' % len(sample_list), logger='CROWN2DATASET')
         return sample_list
 
+    def convert_points(self,main,opposing,crown,implant):
+   
+        new_main = copy.deepcopy(main)
+        new_opposing = copy.deepcopy(opposing)
+        new_crown = copy.deepcopy(crown)
+        new_implant = copy.deepcopy(implant)
+
+        # scale values
+        new_main_points = np.asarray(new_context.points)
+        new_opposing_points = np.asarray(opposing.points)
+        new_crown_points = np.asarray(shell.points)
+        new_implant_points = np.asarray(marginline.points)
+    
+        return new_main_points, new_opposing_points, new_crown_points, new_implant_points
+
     def __getitem__(self, idx):
         sample = self.sample_list[idx]
         file_path = os.path.abspath(sample['path'])
@@ -79,6 +94,8 @@ class crown2(data.Dataset):
             raise ValueError("Crown point cloud is not defined.")
         if implant is None:
             raise ValueError("Implant point cloud is not defined.")
+
+        main,opposing,crown,implant = self.convert_points(main,opposing,crown,implant)
 
         #sample from main
         patch_size_main = 5120
