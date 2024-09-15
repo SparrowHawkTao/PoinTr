@@ -55,10 +55,10 @@ class crown2(data.Dataset):
         new_implant = copy.deepcopy(implant)
 
         # scale values
-        new_main_points = np.asarray(new_context.points)
-        new_opposing_points = np.asarray(opposing.points)
-        new_crown_points = np.asarray(shell.points)
-        new_implant_points = np.asarray(marginline.points)
+        new_main_points = np.asarray(new_main.points)
+        new_opposing_points = np.asarray(new_opposing.points)
+        new_crown_points = np.asarray(new_crown.points)
+        new_implant_points = np.asarray(new_implant.points)
     
         return new_main_points, new_opposing_points, new_crown_points, new_implant_points
 
