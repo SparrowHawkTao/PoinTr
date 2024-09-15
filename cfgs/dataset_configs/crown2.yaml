@@ -1,0 +1,5 @@
+NAME: crown2
+CATEGORY_FILE_PATH: data/crown2/crown2.json
+N_POINTS: 16384
+SAMPLE_PATH: data/crown2/%s
+CARS: FALSE
