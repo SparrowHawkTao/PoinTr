@@ -90,6 +90,7 @@ def run_net(args, config, train_writer=None, val_writer=None):
 
         base_model.train()  # set model to training mode
         n_batches = len(train_dataloader)
+        print('Number of batches: ' + str(n_batches))
         for idx, (taxonomy_ids, model_ids, data) in enumerate(train_dataloader):
             data_time.update(time.time() - batch_start_time)
             npoints = config.dataset.train._base_.N_POINTS

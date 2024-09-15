@@ -37,7 +37,7 @@ class crown(data.Dataset):
             return data_transforms.Compose([{
                 'callback': 'RandomSamplePoints',
                 'parameters': {
-                    'n_points': 2048
+                    'n_points': 14400
                 },
                 'objects': ['partial']
             }, {
@@ -54,10 +54,18 @@ class crown(data.Dataset):
             return data_transforms.Compose([{
                 'callback': 'RandomSamplePoints',
                 'parameters': {
-                    'n_points': 2048
+                    'n_points': 14400
                 },
                 'objects': ['partial']
-            }, {
+            },
+            {
+                'callback': 'RandomSamplePoints',
+                'parameters': {
+                    'n_points': self.npoints
+                },
+                'objects': ['gt']
+            },
+            {
                 'callback': 'ToTensor',
                 'objects': ['partial', 'gt']
             }])
