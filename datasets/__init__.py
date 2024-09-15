@@ -5,3 +5,4 @@ import datasets.ShapeNet55Dataset
 import datasets.Completion3DDataset
 import datasets.Projected_ShapeNet
 import datasets.CrownDataset
+import datasets.Crown2Dataset
