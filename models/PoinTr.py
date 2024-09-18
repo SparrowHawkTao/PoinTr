@@ -114,9 +114,9 @@ class PoinTr(nn.Module):
         # rebuild_points = (relative_xyz.reshape(B,M,3,-1) + coarse_point_cloud.unsqueeze(-1)).transpose(2,3).reshape(B, -1, 3)
 
         # cat the input
-        inp_sparse = fps(xyz, self.num_query)
-        coarse_point_cloud = torch.cat([coarse_point_cloud, inp_sparse], dim=1).contiguous()
-        rebuild_points = torch.cat([rebuild_points, xyz],dim=1).contiguous()
+        # inp_sparse = fps(xyz, self.num_query)
+        # coarse_point_cloud = torch.cat([coarse_point_cloud, inp_sparse], dim=1).contiguous()
+        # rebuild_points = torch.cat([rebuild_points, xyz],dim=1).contiguous()
 
         ret = (coarse_point_cloud, rebuild_points)
         return ret
