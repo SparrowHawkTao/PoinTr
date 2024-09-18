@@ -65,12 +65,6 @@ def inference_single(model, pc_path, args, config, root=None):
         pc_ndarray = pc_ndarray / m
 
     transform = Compose([{
-        'callback': 'UpSamplePoints',
-        'parameters': {
-            'n_points': 2048
-        },
-        'objects': ['input']
-    }, {
         'callback': 'ToTensor',
         'objects': ['input']
     }])
@@ -79,6 +73,7 @@ def inference_single(model, pc_path, args, config, root=None):
     # inference
     ret = model(pc_ndarray_normalized['input'].unsqueeze(0).to(args.device.lower()))
     dense_points = ret[-1].squeeze(0).detach().cpu().numpy()
+    sparse_points = ret[0].squeeze(0).detach().cpu().numpy()
 
     if config.dataset.train._base_['NAME'] == 'ShapeNet':
         # denormalize it to adapt for the original input
@@ -89,13 +84,16 @@ def inference_single(model, pc_path, args, config, root=None):
         target_path = os.path.join(args.out_pc_root, os.path.splitext(pc_path)[0])
         os.makedirs(target_path, exist_ok=True)
         print("eventual path is " + str(target_path))
-        np.save(os.path.join(target_path, 'fine.npy'), dense_points)
+        np.save(os.path.join(target_path, 'dense.npy'), dense_points)
+        np.save(os.path.join(target_path, 'sparse.npy'), sparse_points)
         if args.save_vis_img:
             input_img = misc.get_ptcloud_img(pc_ndarray_normalized['input'].numpy())
             dense_img = misc.get_ptcloud_img(dense_points)
+            sparse_img = misc.get_ptcloud_img(sparse_points)
             cv2.imwrite(os.path.join(target_path, 'input.jpg'), input_img)
-            cv2.imwrite(os.path.join(target_path, 'fine.jpg'), dense_img)
-    
+            cv2.imwrite(os.path.join(target_path, 'dense.jpg'), dense_img)
+            cv2.imwrite(os.path.join(target_path, 'sparse.jpg'), sparse_img)
+
     return
 
 def main():
