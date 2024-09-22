@@ -115,7 +115,7 @@ class crown2(data.Dataset):
         implant_select = self._get_random_chosen_points(implant, patch_size_implant)
 
         data_partial= torch.from_numpy(np.concatenate((main_select, implant_select, opposing_select), axis=0)).float()
-        data_gt= torch.from_numpy(np.concatenate((crown_select, implant_select), axis=0)).float()
+        data_gt= torch.from_numpy(crown_select).float()
 
         return sample['taxonomy_id'], sample['model_id'], (data_partial, data_gt)
 
