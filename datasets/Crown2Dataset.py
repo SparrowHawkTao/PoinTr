@@ -35,7 +35,7 @@ class crown2(data.Dataset):
         """Prepare file list for the dataset"""
         sample_list = []
 
-        print_log('Collecting lines of subset: %s' % (subset), logger='CROWN2DATASET')
+        print_log('Collecting lines of subset: %s, from path: %s' % (subset, self.sample_path), logger='CROWN2DATASET')
         lines = self.dataset_categories[subset]
 
         for line in lines:
@@ -82,8 +82,9 @@ class crown2(data.Dataset):
                #o3d.visualization.draw_geometries([master])
             if 'C.ply' in j:
                crown = o3d.io.read_point_cloud(os.path.join(file_path, 'C.ply'))
-            if 'T.ply' in j:
-               implant = o3d.io.read_point_cloud(os.path.join(file_path, 'T.ply'))   
+            if 'M.ply' in j:
+               # Replace the file name with T.ply for training with implant
+               implant = o3d.io.read_point_cloud(os.path.join(file_path, 'M.ply'))   
                #o3d.visualization.draw_geometries([shell])
 
         # Check if all required point clouds are defined
@@ -111,7 +112,7 @@ class crown2(data.Dataset):
         crown_select = self._get_random_chosen_points(crown, patch_size_crown)
 
         #sample from implant
-        patch_size_implant=1000
+        patch_size_implant=128 #The size is 128 for marginline, 1000 for implant
         implant_select = self._get_random_chosen_points(implant, patch_size_implant)
 
         data_partial= torch.from_numpy(np.concatenate((main_select, implant_select, opposing_select), axis=0)).float()

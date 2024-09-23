@@ -1,7 +1,7 @@
 optimizer : {
   type: AdamW,
   kwargs: {
-  lr : 0.0005, 
+  lr : 0.001, 
   weight_decay : 0.0005
 }}
 
@@ -23,19 +23,19 @@ bnmscheduler: {
 }}
 
 dataset : {
-  train : { _base_: cfgs/dataset_configs/crown2.yaml, 
+  train : { _base_: cfgs/dataset_configs/crown2_margin.yaml, 
             others: {subset: 'train'}},
-  val : { _base_: cfgs/dataset_configs/crown2.yaml, 
+  val : { _base_: cfgs/dataset_configs/crown2_margin.yaml, 
             others: {subset: 'test'}},
-  test : { _base_: cfgs/dataset_configs/crown2.yaml, 
+  test : { _base_: cfgs/dataset_configs/crown2_margin.yaml, 
             others: {subset: 'test'}}}
 
 model : {
-  NAME: PoinTr, num_pred: 14336, num_query: 224, knn_layer: 1, trans_dim: 384}
-  
-total_bs : 2
+   NAME: PoinTr, num_pred: 14336, num_query: 224, knn_layer: 1, trans_dim: 384}
+
+total_bs : 5
 step_per_update : 1
-max_epoch : 300
+max_epoch : 1000
 
 consider_metric: CDL1
 
