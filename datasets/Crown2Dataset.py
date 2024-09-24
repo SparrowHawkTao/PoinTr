@@ -112,7 +112,7 @@ class crown2(data.Dataset):
         crown_select = self._get_random_chosen_points(crown, patch_size_crown)
 
         #sample from implant
-        patch_size_implant=128 #The size is 128 for marginline, 1000 for implant
+        patch_size_implant=1000 #The size is 128 for marginline, 1000 for implant
         implant_select = self._get_random_chosen_points(implant, patch_size_implant)
 
         data_partial= torch.from_numpy(np.concatenate((main_select, implant_select, opposing_select), axis=0)).float()
