@@ -33,8 +33,8 @@ dataset : {
 
 model : {
     NAME: AdaPoinTr, 
-    num_query: 512, 
-    num_points: 8192,
+    num_query: 1601, 
+    num_points: 12808,
     center_num: [512, 256],
     global_feature_dim: 1024, 
     encoder_type: graph,
@@ -63,7 +63,8 @@ model : {
     }
 }
   
-total_bs : 48
+
+total_bs : 5
 step_per_update : 1
 max_epoch : 600
 
