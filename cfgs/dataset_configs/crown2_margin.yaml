@@ -1,5 +1,5 @@
 NAME: crown2
-CATEGORY_FILE_PATH: data/crown2_margin/crown2.json
+CATEGORY_FILE_PATH: data/crown2_margin/crown2_200.json
 N_POINTS: 16384
-SAMPLE_PATH: data/crown2_margin/crown_data_with_marginline_new/%s
+SAMPLE_PATH: data/crown2_margin/crown_data_200/%s
 CARS: FALSE
