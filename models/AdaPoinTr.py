@@ -848,7 +848,8 @@ class PCTransformer(nn.Module):
         coarse = self.coarse_pred(global_feature).reshape(bs, -1, 3)
 
         coarse_inp = misc.fps(xyz, self.num_query//2) # B 128 3
-        coarse = torch.cat([coarse, coarse_inp], dim=1) # B 224+128 3?
+        # Comment this to adapt to training on crown data
+        # coarse = torch.cat([coarse, coarse_inp], dim=1) # B 224+128 3?
 
         mem = self.mem_link(x)
 
