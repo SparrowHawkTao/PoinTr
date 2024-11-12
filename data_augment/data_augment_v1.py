@@ -11,11 +11,12 @@ import shutil
 PATCH_SIZE_MAIN = 5120
 PATCH_SIZE_OPPOSING = 5120
 PATCH_SIZE_CROWN = 1568
-PATCH_SIZE_MARGINLINE = 1024
+PATCH_SIZE_MARGINLINE = 128
 
 # Define constants for data augmentation
-ROTATION_ANGLE = np.pi/4  # 45 degrees
-SCALE_FACTOR = 1.2
+# Remove or comment out the fixed ROTATION_ANGLE
+# ROTATION_ANGLE = np.pi/4  # 45 degrees
+SCALE_FACTORS = [0.8, 0.9, 1.2]
 TRANSLATION_VECTOR = np.array([100, 100, 100])  # Move 10 units in x direction
 
 def save_point_cloud(points, output_path, filename):
@@ -126,17 +127,30 @@ def translate_point_cloud(point_cloud, translation_vector):
     translated_point_cloud = point_cloud + translation_vector
     return translated_point_cloud
 
-def rotate_point_clouds(main, opposing, crown, marginline, angle, output_path):
-    """Rotates all point clouds by the specified angle around the Z-axis and saves to PLY files."""
-    for data, suffix in [(main, 'A'), (opposing, 'P'), (crown, 'C'), (marginline, 'M')]:
-        rotated = rotate_point_cloud(data.copy(), angle)
-        save_point_cloud(rotated, output_path, f"{suffix}.ply")
+def rotate_point_clouds(main, opposing, crown, marginline, ml_output_path, case_name):
+    """Rotates all point clouds by three different random angles around the Z-axis and saves to PLY files."""
+    for rotation_index in range(3):  # Generate 3 different rotations
+        # Create a specific folder for this rotation at the same level as fixed/scaled
+        rotation_path = os.path.join(ml_output_path, f"{case_name}_rotated_{rotation_index+1}")
+        os.makedirs(rotation_path, exist_ok=True)
+        
+        # Generate random angle between 0 and 360 degrees, convert to radians
+        random_angle = np.random.uniform(0, 360) * (np.pi / 180)
+        
+        for data, suffix in [(main, 'A'), (opposing, 'P'), (crown, 'C'), (marginline, 'M')]:
+            rotated = rotate_point_cloud(data.copy(), random_angle)
+            save_point_cloud(rotated, rotation_path, f"{suffix}.ply")
 
-def scale_point_clouds(main, opposing, crown, marginline, scale_factor, output_path):
-    """Scales all point clouds by the specified factor and saves to PLY files."""
-    for data, suffix in [(main, 'A'), (opposing, 'P'), (crown, 'C'), (marginline, 'M')]:
-        scaled = scale_point_cloud(data.copy(), scale_factor)
-        save_point_cloud(scaled, output_path, f"{suffix}.ply")
+def scale_point_clouds(main, opposing, crown, marginline, ml_output_path, case_name):
+    """Scales all point clouds by three different factors and saves to PLY files."""
+    for scale_index, scale_factor in enumerate(SCALE_FACTORS):
+        # Create a specific folder for this scaling at the same level as others
+        scale_path = os.path.join(ml_output_path, f"{case_name}_scaled_{scale_index+1}")
+        os.makedirs(scale_path, exist_ok=True)
+        
+        for data, suffix in [(main, 'A'), (opposing, 'P'), (crown, 'C'), (marginline, 'M')]:
+            scaled = scale_point_cloud(data.copy(), scale_factor)
+            save_point_cloud(scaled, scale_path, f"{suffix}.ply")
 
 def translate_point_clouds(main, opposing, crown, marginline, translation_vector, output_path):
     """Translates all point clouds by the specified vector and saves to PLY files."""
@@ -174,28 +188,24 @@ def process_point_cloud_directory(input_path, ml_output_path, partial_output_pat
                 
                 # Create ML output directories
                 fixed_size_path = os.path.join(ml_output_path, f"{item.name}_fixed_size")
-                rotated_path = os.path.join(ml_output_path, f"{item.name}_rotated")
-                scaled_path = os.path.join(ml_output_path, f"{item.name}_scaled")
                 translated_path = os.path.join(ml_output_path, f"{item.name}_translated")
                 
-                # Create all directories
-                for path in [fixed_size_path, rotated_path, scaled_path, translated_path]:
+                # Create directories
+                for path in [fixed_size_path, translated_path]:
                     os.makedirs(path, exist_ok=True)
                 
                 # Sample and save point clouds with flat partial path
                 main, opposing, crown, marginline = sample_and_save_point_clouds(
                     os.path.join(input_path, item.name),
                     fixed_size_path + "/",
-                    partial_output_path  # Now passing the flat directory path
+                    partial_output_path
                 )
                 
                 # Generate rotated versions
-                rotate_point_clouds(main, opposing, crown, marginline, 
-                                 ROTATION_ANGLE, rotated_path)
+                rotate_point_clouds(main, opposing, crown, marginline, ml_output_path, item.name)
                 
                 # Generate scaled versions
-                scale_point_clouds(main, opposing, crown, marginline, 
-                                SCALE_FACTOR, scaled_path)
+                scale_point_clouds(main, opposing, crown, marginline, ml_output_path, item.name)
                 
                 # Generate translated versions
                 translate_point_clouds(main, opposing, crown, marginline, 
@@ -223,7 +233,7 @@ def cleanup_output_directories(ml_output_path, partial_output_path):
     os.makedirs(partial_output_path)
     print(f"Cleaned up and created fresh output directories")
 
-def create_train_test_split(ml_output_path, train_ratio=0.8, seed=42):
+def create_train_test_split(ml_output_path, train_ratio=0.85, seed=42):
     """
     Creates a JSON file containing train/test split information with all transformations.
     
