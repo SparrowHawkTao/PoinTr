@@ -16,7 +16,7 @@ PATCH_SIZE_MARGINLINE = 128
 # Define constants for data augmentation
 # Remove or comment out the fixed ROTATION_ANGLE
 # ROTATION_ANGLE = np.pi/4  # 45 degrees
-SCALE_FACTORS = [0.8, 0.9, 1.2]
+SCALE_FACTORS = [0.8, 1.2]
 TRANSLATION_VECTOR = np.array([100, 100, 100])  # Move 10 units in x direction
 
 def save_point_cloud(points, output_path, filename):
@@ -128,8 +128,8 @@ def translate_point_cloud(point_cloud, translation_vector):
     return translated_point_cloud
 
 def rotate_point_clouds(main, opposing, crown, marginline, ml_output_path, case_name):
-    """Rotates all point clouds by three different random angles around the Z-axis and saves to PLY files."""
-    for rotation_index in range(3):  # Generate 3 different rotations
+    """Rotates all point clouds by two different random angles around the Z-axis and saves to PLY files."""
+    for rotation_index in range(2):  # Changed from 3 to 2
         # Create a specific folder for this rotation at the same level as fixed/scaled
         rotation_path = os.path.join(ml_output_path, f"{case_name}_rotated_{rotation_index+1}")
         os.makedirs(rotation_path, exist_ok=True)
@@ -239,27 +239,29 @@ def create_train_test_split(ml_output_path, train_ratio=0.85, seed=42):
     
     Args:
         ml_output_path: Path containing all transformed point cloud files
-        train_ratio: Ratio of data to use for training (default: 0.8)
+        train_ratio: Ratio of data to use for training (default: 0.85)
         seed: Random seed for reproducibility
     """
     # Set random seed for reproducibility
     random.seed(seed)
     
     # Define known transformations
-    transformations = ['fixed_size', 'rotated', 'scaled', 'translated']
+    transformations = ['fixed_size', 'translated']
+    # Add rotated and scaled variations (now only 2 each)
+    for i in range(1, 3):  # Changed from (1, 4) to (1, 3) to get just 1, 2
+        transformations.append(f'rotated_{i}')
+        transformations.append(f'scaled_{i}')
     
     # Get all directories
     all_dirs = [d for d in os.listdir(ml_output_path) 
                 if os.path.isdir(os.path.join(ml_output_path, d))]
     
-    # Extract unique case names by removing known transformation suffixes
+    # Extract unique case names by looking for fixed_size suffix
     case_names = set()
     for dir_name in all_dirs:
-        for transform in transformations:
-            if dir_name.endswith(f"_{transform}"):
-                case_name = dir_name[:-len(f"_{transform}")]
-                case_names.add(case_name)
-                break
+        if dir_name.endswith('_fixed_size'):
+            case_name = dir_name.rsplit('_fixed_size', 1)[0]
+            case_names.add(case_name)
     
     # Randomly split cases into train and test sets
     case_names = list(case_names)
